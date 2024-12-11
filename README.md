@@ -16,8 +16,81 @@ change `framer-motion` dependency to `11.5.6` in `package.json`
 
 nextui add --all
 
+Started working through: https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/updating-next-js-application-integration-react-sdk.html
+
 npm install @pega/auth
 
+npm install @pega/react-sdk-components
+
+npm install @pega/configs
+
+npm install @pega/constellationjs
+
+npm install @pega/pcore-pconnect-typedefs
+
+npm install @pega/prettier-config
+
+npm install @pega/react-sdk-overrides
+
+npm install @pega/tsconfig
+
+npm i -D vite-plugin-static-copy # Using this instead of webpack
+
+Setup vite.config.ts to copy specific Pega node files to `public`.
+
+npm run build
+
+edited tsconfig.json to add Pega types.
+
+built `src/pages/pega.tsx` as "hello, world' for the embedded scenario. Got these errors on run:
+
+```
+Error: Build failed with 257 errors:
+node_modules/@pega/react-sdk-components/lib/bridge/react_pconnect.js:6:38: ERROR: Could not resolve "react-redux"
+node_modules/@pega/react-sdk-components/lib/components/designSystemExtension/AlertBanner/AlertBanner.js:2:22: ERROR: Could not resolve "@mui/material"
+
+[...etc...]
+```
+
+npm install react-redux
+
+npm install @mui/material
+
+npm install @mui/styles
+
+npm install @mui/icons-material
+
+npm install @tinymce/tinymce-react
+
+npm install react-number-format
+
+npm install @mui/x-date-pickers
+
+npm install dayjs
+
+npm install throttle-debounce
+
+npm install mui-tel-input
+
+npm install downloadjs
+
+npm install lodash.difference
+
+npm install uuid
+
+npm install @mui/lab
+
+npm install react-datepicker
+
+make sure `sdkContentServerUrl` is setup correctly, including getting HTTP vs HTTPS correct.
+
+Update vite.config.ts to account for `'./node_modules/@pega/constellationjs/dist/js/*'`.
+
+npm run build
+
+set `mashupGrantType` to `passwordCreds` in `sdk-config.json` (I can't get the default `authCode` to work, but I think that flow is less desirable anyway), created a matching oauth2 client reg rec in Pega.
+
+Worked on making `src/pages/pega.tsx` show a button that, when clicked, shows an embedded case creation view.
 
 # Vite & NextUI Template
 

@@ -5,6 +5,11 @@
     },
   ],
   "settings": {
-    "cSpell.words": ["Pega"],
+    "cSpell.words": [
+      "DIXL",
+      "nextui",
+      "pconnect",
+      "Pega"
+    ],
   },
 }
