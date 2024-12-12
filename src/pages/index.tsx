@@ -25,10 +25,6 @@ export default function IndexPage() {
           </div>
         </div>
 
-        <div className="flex gap-x-4">
-          <Calendar aria-label="Date (No Selection)" />
-        </div>
-
         <div className="flex gap-3">
           <Link
             isExternal

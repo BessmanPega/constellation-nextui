@@ -92,6 +92,8 @@ set `mashupGrantType` to `passwordCreds` in `sdk-config.json` (I can't get the d
 
 Worked on making `src/pages/pega.tsx` show a button that, when clicked, shows an embedded case creation view.
 
+Generated a `TextInput` in the standalone SDK, copied the .tsx file over to `src/components` and did rudimentary styling to make it stand out. Added it to `sdk-local-component-map.ts`.
+
 # Vite & NextUI Template
 
 This is a template for creating applications using Vite and NextUI (v2).
