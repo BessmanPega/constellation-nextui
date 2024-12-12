@@ -56,6 +56,7 @@ export default function TextInput(props: TextInputProps) {
         label={label}
         maxLength={maxLength}
         placeholder={placeholder}
+        type='email'
         value={inputValue}
         onBlur={!readOnly? handleBlur : undefined }
         onChange={handleChange}
