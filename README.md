@@ -94,6 +94,22 @@ Worked on making `src/pages/pega.tsx` show a button that, when clicked, shows an
 
 Generated a `TextInput` in the standalone SDK, copied the .tsx file over to `src/components` and did rudimentary styling to make it stand out. Added it to `sdk-local-component-map.ts`.
 
+Used DX API Explorer and browser network tracer and react debugger to find remaining components to override:
+
+- Fields:
+    - [x] AutoComplete
+    - [ ] Date
+    - [x] Dropdown
+    - [x] Email
+    - [x] Phone
+    - [ ] RadioButtons
+    - [ ] TextArea
+    - [ ] TextContent
+    - [x] TextInput
+- Infra:
+    - [ ] ActionButtons
+    - [ ] MultiStep
+
 # Vite & NextUI Template
 
 This is a template for creating applications using Vite and NextUI (v2).
