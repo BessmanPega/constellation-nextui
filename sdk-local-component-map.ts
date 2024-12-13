@@ -1,5 +1,6 @@
 // Statically load all "local" components that aren't yet in the npm package
 import AutoComplete from './src/components/AutoComplete'
+import Date from './src/components/Date'
 import Dropdown from './src/components/Dropdown'
 import Email from './src/components/Email'
 import Phone from './src/components/Phone'
@@ -11,6 +12,7 @@ import TextInput from './src/components/TextInput'
 
 const localSdkComponentMap = {
     AutoComplete: AutoComplete,
+    Date: Date,
     Dropdown: Dropdown,
     Email: Email,
     Phone: Phone,

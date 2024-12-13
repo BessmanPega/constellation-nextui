@@ -98,17 +98,18 @@ Used DX API Explorer and browser network tracer and react debugger to find remai
 
 - Fields:
     - [x] AutoComplete
-    - [ ] Date
+    - [x] Date
     - [x] Dropdown
     - [x] Email
     - [x] Phone
     - [ ] RadioButtons
-    - [ ] TextArea
-    - [ ] TextContent
     - [x] TextInput
 - Infra:
     - [ ] ActionButtons
+    - [ ] Assignment
+    - [ ] Flow container
     - [ ] MultiStep
+    - [ ] ToDo
 
 # Vite & NextUI Template
 
