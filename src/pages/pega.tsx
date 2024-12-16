@@ -171,7 +171,7 @@ export default function HelloPega() {
   
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section className="flex flex-col items-center justify-center">
         <div className="inline-block text-center justify-center">
           {isLoggedIn? (
             caseCreated? ( null ) : (<Button onClick={createCaseButtonClicked}>Create case</Button>)

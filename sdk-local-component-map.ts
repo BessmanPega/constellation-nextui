@@ -4,6 +4,7 @@ import AutoComplete from './src/components/AutoComplete'
 import Date from './src/components/Date'
 import Dropdown from './src/components/Dropdown'
 import Email from './src/components/Email'
+import MultiStep from './src/components/MultiStep'
 import Phone from './src/components/Phone'
 import RadioButtons from './src/components/RadioButtons'
 import TextInput from './src/components/TextInput'
@@ -18,6 +19,7 @@ const localSdkComponentMap = {
     Date: Date,
     Dropdown: Dropdown,
     Email: Email,
+    MultiStep: MultiStep,
     Phone: Phone,
     RadioButtons: RadioButtons,
     TextInput: TextInput,
