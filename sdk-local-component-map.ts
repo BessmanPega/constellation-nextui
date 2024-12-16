@@ -4,6 +4,7 @@ import Date from './src/components/Date'
 import Dropdown from './src/components/Dropdown'
 import Email from './src/components/Email'
 import Phone from './src/components/Phone'
+import RadioButtons from './src/components/RadioButtons'
 import TextInput from './src/components/TextInput'
 /*import end - DO NOT REMOVE*/
 
@@ -16,6 +17,7 @@ const localSdkComponentMap = {
     Dropdown: Dropdown,
     Email: Email,
     Phone: Phone,
+    RadioButtons: RadioButtons,
     TextInput: TextInput,
     /*map end - DO NOT REMOVE*/
  };
