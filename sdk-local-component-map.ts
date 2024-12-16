@@ -1,4 +1,5 @@
 // Statically load all "local" components that aren't yet in the npm package
+import ActionButtons from './src/components/ActionButtons'
 import AutoComplete from './src/components/AutoComplete'
 import Date from './src/components/Date'
 import Dropdown from './src/components/Dropdown'
@@ -12,6 +13,7 @@ import TextInput from './src/components/TextInput'
 // found locally. If not found here, look in the Pega-provided component map.
 
 const localSdkComponentMap = {
+    ActionButtons: ActionButtons,
     AutoComplete: AutoComplete,
     Date: Date,
     Dropdown: Dropdown,
