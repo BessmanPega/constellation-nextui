@@ -1,11 +1,7 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { useDisclosure, Drawer, DrawerContent, DrawerHeader } from '@nextui-org/react';
 import { getComponentFromMap } from '@pega/react-sdk-components/lib/bridge/helpers/sdk_component_map';
 import { useFocusFirstField, useScrolltoTop } from '@pega/react-sdk-components/lib/hooks';
-
 import { PConnProps } from '@pega/react-sdk-components/lib/types/PConnProps';
 
 interface AssignmentProps extends PConnProps {
@@ -21,6 +17,7 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
   // Get emitted components from map (so we can get any override that may exist)
   const AssignmentCard = getComponentFromMap('AssignmentCard');
   const MultiStep = getComponentFromMap('MultiStep');
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   const { getPConnect, children, itemKey = '', isInModal = false, banners = [] } = props;
   const thePConn = getPConnect();
@@ -46,21 +43,12 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
   const rejectCase = actionsAPI.rejectCase?.bind(actionsAPI);
   // const showPage = actionsAPI.showPage.bind(actionsAPI);
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  //const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-
-
-
-  ///////////////////////////////
-
-  console.log("***************ASSIGNMENT***************");
-  console.log("Props: ", props);
-  console.log("PCore.getStore().getState(): ", PCore.getStore().getState());
-
-  ///////////////////////////////
 
   function findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
     let count = 0;
+
     arStepperSteps.forEach(step => {
       if (step.visited_status === 'current') {
         arIndicies[depth] = count;
@@ -83,8 +71,8 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
     return arIndicies;
   }
 
-  function getStepsInfo(steps, formedSteps: any = []) {
-    steps.forEach(step => {
+  function getStepsInfo(steps: any, formedSteps: any = []) {
+    steps.forEach((step: any) => {
       if (step.name) {
         step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, localeReference);
       }
@@ -94,10 +82,12 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
         formedSteps.push(step);
       }
     });
+
     return formedSteps;
   }
 
   const scrollId = window.location.href.includes('embedded') ? '#pega-part-of-page' : '#portal';
+
   useScrolltoTop(scrollId, children);
   useFocusFirstField('Assignment', children);
 
@@ -132,6 +122,7 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
           if (oCaseInfo?.navigation?.steps) {
             const steps = JSON.parse(JSON.stringify(oCaseInfo?.navigation?.steps));
             const formedSteps = getStepsInfo(steps);
+
             setArNavigationSteps(formedSteps);
           }
 
@@ -143,21 +134,15 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
 
   function showToast(message: string) {
     const theMessage = `Assignment: ${message}`;
+
     // eslint-disable-next-line no-console
     console.error(theMessage);
     setSnackbarMessage(message);
-    setShowSnackbar(true);
+    onOpen();
   }
 
-  function handleSnackbarClose(event: React.SyntheticEvent<any> | Event, reason?: string) {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setShowSnackbar(false);
-  }
-
-  function onSaveActionSuccess(data) {
-    actionsAPI.cancelAssignment(itemKey).then(() => {
+  function onSaveActionSuccess(data: any) {
+    actionsAPI.cancelAssignment(itemKey, false).then(() => {
       PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CREATE_STAGE_SAVED, data);
     });
   }
@@ -186,6 +171,7 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
             .then(() => {
               // @ts-ignore - Property 'c11nEnv' is private and only accessible within class 'CaseInfo'.
               const caseType = thePConn.getCaseInfo().c11nEnv.getValue(PCore.getConstants().CASE_INFO.CASE_TYPE_ID);
+
               onSaveActionSuccess({ caseType, caseID, assignmentID });
             })
             .catch(() => {
@@ -205,6 +191,7 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
             // @ts-ignore - Property 'isLocalAction' is private and only accessible within class 'CaseInfo'.
             thePConn.getCaseInfo().isLocalAction() ||
             (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION && getPConnect().getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
+
           if (isAssignmentInCreateStage && isInModal && !isLocalAction) {
             const cancelPromise = cancelCreateStageAssignment(itemKey);
 
@@ -216,7 +203,7 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
                 showToast(`${localizedVal('Cancel failed!', localeCategory)}`);
               });
           } else {
-            const cancelPromise = cancelAssignment(itemKey);
+            const cancelPromise = cancelAssignment(itemKey, false);
 
             cancelPromise
               .then(data => {
@@ -276,12 +263,14 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
     }
   }
 
-  function getRefreshProps(refreshConditions) {
+  function getRefreshProps(refreshConditions: any) {
     // refreshConditions cuurently supports only "Changes" event
     if (!refreshConditions) {
       return [];
     }
-    return refreshConditions.filter(item => item.event && item.event === 'Changes').map(item => [item.field, item.field?.substring(1)]) || [];
+
+    return refreshConditions.filter((item: any) => item.event && item.event === 'Changes')
+                            .map((item: any) => [item.field, item.field?.substring(1)]) || [];
   }
 
   // expected format of refreshConditions : [{field: ".Name", event: "Changes"}]
@@ -300,8 +289,9 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
     autoDetectRefresh: true,
     preserveClientChanges: false
   };
+
   if (refreshProps.length > 0) {
-    refreshProps.forEach(prop => {
+    refreshProps.forEach((prop: any) => {
       PCore.getRefreshManager().registerForRefresh(
         'PROP_CHANGE',
         thePConn.getActionsApi().refreshCaseView.bind(thePConn.getActionsApi(), caseKey, '', pageReference, {
@@ -319,72 +309,45 @@ export default function Assignment(props: PropsWithChildren<AssignmentProps>) {
     <div id='Assignment'>
       {banners}
       {bHasNavigation ? (
-        <>
-          <MultiStep
-            getPConnect={getPConnect}
-            itemKey={itemKey}
-            actionButtons={actionButtons}
-            onButtonPress={buttonPress}
-            bIsVertical={bIsVertical}
-            arCurrentStepIndicies={arCurrentStepIndicies}
-            arNavigationSteps={arNavigationSteps}
-          >
-            {children}
-          </MultiStep>
-          <Snackbar
-            open={showSnackbar}
-            autoHideDuration={3000}
-            onClose={handleSnackbarClose}
-            message={snackbarMessage}
-            action={
-              <IconButton size='small' aria-label='close' color='inherit' onClick={handleSnackbarClose}>
-                <CloseIcon fontSize='small' />
-              </IconButton>
-            }
-          />
-        </>
+        <MultiStep
+          actionButtons={actionButtons}
+          arCurrentStepIndicies={arCurrentStepIndicies}
+          arNavigationSteps={arNavigationSteps}
+          bIsVertical={bIsVertical}
+          getPConnect={getPConnect}
+          itemKey={itemKey}
+          onButtonPress={buttonPress}
+        >
+          {children}
+        </MultiStep>
       ) : (
-        <>
-          <AssignmentCard getPConnect={getPConnect} itemKey={itemKey} actionButtons={actionButtons} onButtonPress={buttonPress}>
-            {children}
-          </AssignmentCard>
-          <Snackbar
-            open={showSnackbar}
-            autoHideDuration={3000}
-            onClose={handleSnackbarClose}
-            message={snackbarMessage}
-            action={
-              <IconButton size='small' aria-label='close' color='inherit' onClick={handleSnackbarClose}>
-                <CloseIcon fontSize='small' />
-              </IconButton>
-            }
-          />
-        </>
+        <AssignmentCard
+        actionButtons={actionButtons}
+        getPConnect={getPConnect}
+        itemKey={itemKey}
+        onButtonPress={buttonPress}
+        >
+          {children}
+        </AssignmentCard>
       )}
+      <Drawer
+      isOpen={isOpen}
+      placement='bottom'
+      radius='none'
+      size='xs'
+      onOpenChange={onOpenChange}
+      >
+        <DrawerContent>
+          {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (onClose) => (
+              <DrawerHeader className="mx-4">
+                {snackbarMessage}
+              </DrawerHeader>
+            )
+          }
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
-
-// From WC SDK
-// const aHtml = html`
-// ${this.bHasNavigation?
-//   html`
-//     <div class="psdk-stepper">
-//     <multi-step-component .pConn=${this.pConn} .arChildren=${this.arChildren} itemKey=${this.itemKey}
-//         .arMainButtons=${this.arMainButtons} .arSecondaryButtons=${this.arSecondaryButtons}
-//         .bIsVertical=${this.bIsVertical} .arCurrentStepIndicies=${this.arCurrentStepIndicies}
-//         .arNavigationSteps=${this.arNavigationSteps}
-//         @MultiStepActionButtonClick="${this._onActionButtonClick}">
-//     </multi-step-component>
-//     <lit-toast></lit-toast>
-//     </div>`
-//     :
-//   html`
-//     <div>
-//         <assignment-card-component .pConn=${this.pConn} .arChildren=${this.arChildren} itemKey=${this.itemKey}
-//           .arMainButtons=${this.arMainButtons} .arSecondaryButtons=${this.arSecondaryButtons}
-//           @AssignmentActionButtonClick="${this._onActionButtonClick}">
-//         </assignment-card-component>
-//         <lit-toast></lit-toast>
-//     </div>`}
-// `;

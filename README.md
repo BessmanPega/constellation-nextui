@@ -105,9 +105,9 @@ Used DX API Explorer and browser network tracer and react debugger to find remai
     - [x] RadioButtons
     - [x] TextInput
 - Infra:
-    - [ ] FlowContainer (this one isn't in the builder, had to grab it [from source](https://github.com/pegasystems/react-sdk-components/blob/29499ce83d08a14768981fed8eefcc613d5e7dab/packages/react-sdk-components/src/components/infra/Containers/FlowContainer/FlowContainer.tsx))
+    - [x] FlowContainer (this one isn't in the builder, had to grab it [from source](https://github.com/pegasystems/react-sdk-components/blob/29499ce83d08a14768981fed8eefcc613d5e7dab/packages/react-sdk-components/src/components/infra/Containers/FlowContainer/FlowContainer.tsx))
     - [x] ActionButtons
-    - [ ] Assignment
+    - [x] Assignment
     - [x] MultiStep
     - [ ] ToDo
 - Templates:

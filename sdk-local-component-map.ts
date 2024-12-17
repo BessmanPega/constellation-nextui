@@ -1,5 +1,6 @@
 // Statically load all "local" components that aren't yet in the npm package
 import ActionButtons from './src/components/ActionButtons';
+import Assignment from './src/components/Assignment';
 import AutoComplete from './src/components/AutoComplete';
 import Date from './src/components/Date';
 import DefaultForm from './src/components/DefaultForm';
@@ -18,6 +19,7 @@ import TwoColumn from './src/components/TwoColumn';
 
 const localSdkComponentMap = {
     ActionButtons: ActionButtons,
+    Assignment: Assignment,
     AutoComplete: AutoComplete,
     Date: Date,
     DefaultForm: DefaultForm,

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { Alert, Card } from '@nextui-org/react';
-import StoreContext from '@pega/react-sdk-components/lib/bridge/Context/StoreContext';
 import { Utils } from '@pega/react-sdk-components/lib/components/helpers/utils';
 import { isContainerInitialized } from '@pega/react-sdk-components/lib/components/infra/Containers/helpers';
 import { getComponentFromMap } from '@pega/react-sdk-components/lib/bridge/helpers/sdk_component_map';
@@ -24,10 +23,8 @@ export const FlowContainer = (props: FlowContainerProps) => {
   // Get the proper implementation (local or Pega-provided) for these components that are emitted below
   const Assignment = getComponentFromMap('Assignment');
   const ToDo = getComponentFromMap('Todo'); // NOTE: ConstellationJS Engine uses "Todo" and not "ToDo"!!!
-  const AlertBanner = getComponentFromMap('AlertBanner');
 
   const pCoreConstants = PCore.getConstants();
-  const PCoreVersion = PCore.getPCoreVersion();
   const { TODO } = pCoreConstants;
   const todo_headerText = 'To do';
 
@@ -40,7 +37,6 @@ export const FlowContainer = (props: FlowContainerProps) => {
     activeContainerItemID: itemKey
   } = props;
 
-  const { displayOnlyFA } = useContext<any>(StoreContext);
   const pConnectOfFlowContainer = getPConnectOfFlowContainer();
   const isInitialized = isContainerInitialized(pConnectOfFlowContainer);
   const hasItems = isInitialized && hasContainerItems(pConnectOfFlowContainer);
@@ -208,6 +204,7 @@ export const FlowContainer = (props: FlowContainerProps) => {
 
     try {
       loadingInfo = thePConn.getLoadingStatus(''); // 1st arg empty string until typedefs properly allow optional
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (ex) {
       // eslint-disable-next-line no-console
       console.error(`${thePConn.getComponentName()}: loadingInfo catch block`);
@@ -276,12 +273,6 @@ export const FlowContainer = (props: FlowContainerProps) => {
 
     return hasBanner && <Alert color='warning'>{messages}</Alert>;
   };
-
-  if (!caseMessages) {
-    setCaseMessages("what does this do?");
-    setHasCaseMessages(true);
-  }
-  if (caseMessages) console.log(`caseMessages: ${caseMessages}`);
 
   return (
     <div id={buildName}>
