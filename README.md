@@ -115,8 +115,34 @@ Used DX API Explorer and browser network tracer and react debugger to find remai
     - [x] DefaultForm
     - [X] TwoColumn
 - Misc:
-    - [ ] Wire up cancel button
-    - [ ] Handle click-away-and-back-again
+    - [x] Wire up cancel button
+    - [x] Handle click-away-and-back-again
+
+Then I tried to pull out all the MUI stuff from `package.json`:
+
+```
+@mui/icons-material
+@mui/lab
+@mui/material
+@mui/styles
+@mui/x-date-pickers
+mui-tel-input
+```
+
+I ran `npm prune` and then `npm run dev`, but Vite threw about a billion errors about missing MUI stuff, it was basically this:
+
+```
+X [ERROR] Could not resolve "@mui/material/Checkbox"
+
+    node_modules/@pega/react-sdk-components/lib/components/template/ListView/ListView.js:37:21:
+      37 │ import Checkbox from '@mui/material/Checkbox';
+         ╵                      ~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You can mark the path "@mui/material/Checkbox" as external to exclude it from the bundle, which
+  will remove this error and leave the unresolved path in the bundle.
+```
+
+Over and over again. Given that `@pega/react-sdk-components` is one of the core libraries, it doesn't look like it's possible to pull MUI out of the project dependencies at this point in time.
 
 # Vite & NextUI Template
 
