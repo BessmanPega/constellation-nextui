@@ -5,6 +5,7 @@ import Date from './src/components/Date';
 import DefaultForm from './src/components/DefaultForm';
 import Dropdown from './src/components/Dropdown';
 import Email from './src/components/Email';
+import FlowContainer from './src/components/FlowContainer';
 import MultiStep from './src/components/MultiStep';
 import Phone from './src/components/Phone';
 import RadioButtons from './src/components/RadioButtons';
@@ -22,6 +23,7 @@ const localSdkComponentMap = {
     DefaultForm: DefaultForm,
     Dropdown: Dropdown,
     Email: Email,
+    FlowContainer: FlowContainer,
     MultiStep: MultiStep,
     Phone: Phone,
     RadioButtons: RadioButtons,
