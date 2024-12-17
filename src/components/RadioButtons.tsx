@@ -1,4 +1,4 @@
-import {RadioGroup, Radio} from "@nextui-org/react";
+import { Input, RadioGroup, Radio } from "@nextui-org/react";
 import Utils from '@pega/react-sdk-components/lib/components/helpers/utils';
 import handleEvent from '@pega/react-sdk-components/lib/components/helpers/event-utils';
 import { PConnFieldProps } from '@pega/react-sdk-components/lib/types/PConnProps';
@@ -56,6 +56,17 @@ export default function RadioButtons(props: RadioButtonsProps) {
     handleEvent(actionsApi, 'changeNblur', propName, newValue);
     thePConn.getValidationApi().validate(newValue, '');
   };
+
+  if (readOnly) {
+    return (
+      <Input
+      isReadOnly
+      label={label}
+      value={value}
+      variant={'bordered'}
+      />
+    );
+  }
 
   return (
     <RadioGroup

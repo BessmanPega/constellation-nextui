@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {Select, SelectItem} from "@nextui-org/react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
 import isDeepEqual from 'fast-deep-equal/react';
 import Utils from '@pega/react-sdk-components/lib/components/helpers/utils';
 import { getDataPage } from '@pega/react-sdk-components/lib/components/helpers/data_page';
@@ -175,8 +175,6 @@ export default function Dropdown(props: DropdownProps) {
   const localeName = localeContext === 'datapage' ? metaData?.datasource?.name : refName;
   const localePath = localeContext === 'datapage' ? displayName : localeName;
 
-  let readOnlyProp = {};
-
   if (displayMode === 'DISPLAY_ONLY') {
     return (
       <FieldValueList
@@ -198,16 +196,6 @@ export default function Dropdown(props: DropdownProps) {
     );
   }
 
-  if (readOnly) {
-    readOnlyProp = { readOnly: true };
-  }
-
-  let testProp = {};
-
-  testProp = {
-    'data-test-id': testId
-  };
-
   const handleChange = (evt: any) => {
     const selectedValue = evt.target.value === placeholder ? '' : evt.target.value;
     
@@ -219,6 +207,17 @@ export default function Dropdown(props: DropdownProps) {
 
   // Material UI shows a warning if the component is rendered before options are set.
   //  So, hold off on rendering anything until options are available...
+  if (readOnly) {
+    return (
+      <Input
+      isReadOnly
+      label={label}
+      value={value}
+      variant={'bordered'}
+      />
+    );
+  }
+
   return options.length === 0 ? null : (
     <Select
         defaultSelectedKeys={[value]}
@@ -229,6 +228,7 @@ export default function Dropdown(props: DropdownProps) {
         isRequired={required}
         label={label}
         placeholder={thePConn.getLocalizedValue(placeholder, '', '')} // 2nd and 3rd args empty string until typedef marked correctly
+        variant={readOnly? 'bordered' : 'flat'}
         onChange={!readOnly ? handleChange : undefined}
     >
         {options.map((option: any) => (

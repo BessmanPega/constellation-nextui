@@ -58,6 +58,7 @@ export default function TextInput(props: TextInputProps) {
         placeholder={placeholder}
         type='email'
         value={inputValue}
+        variant={readOnly? 'bordered' : 'flat'}
         onBlur={!readOnly? handleBlur : undefined }
         onChange={handleChange}
     />

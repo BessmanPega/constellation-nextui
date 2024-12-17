@@ -198,6 +198,7 @@ export default function AutoComplete(props: AutoCompleteProps) {
       isRequired={required}
       label={label}
       placeholder={placeholder}
+      variant={readOnly? 'bordered' : 'flat'}
       onInputChange={handleChange}
     >
       {options.map((option) => (

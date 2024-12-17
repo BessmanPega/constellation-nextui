@@ -30,7 +30,6 @@
     "@pega/auth": "^0.2.21",
     "@pega/configs": "^0.16.2",
     "@pega/constellationjs": "^24.2.0",
-    "@pega/pcore-pconnect-typedefs": "^3.2.1",
     "@pega/prettier-config": "^0.16.2",
     "@pega/react-sdk-components": "^24.2.10",
     "@pega/react-sdk-overrides": "^24.2.10",
@@ -55,6 +54,7 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
+    "@pega/pcore-pconnect-typedefs": "^3.2.1",
     "@types/node": "20.5.7",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",

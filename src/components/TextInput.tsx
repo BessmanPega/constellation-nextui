@@ -57,6 +57,7 @@ export default function TextInput(props: TextInputProps) {
         maxLength={maxLength}
         placeholder={placeholder}
         value={inputValue}
+        variant={readOnly? 'bordered' : 'flat'}
         onBlur={!readOnly? handleBlur : undefined }
         onChange={handleChange}
     />

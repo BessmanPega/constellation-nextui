@@ -47,6 +47,7 @@ export default function Date(props: DateProps) {
     label={label}
     // @ts-ignore -- TS complains but this is what the NextUI docs say to do: https://nextui.org/docs/components/date-picker#controlled
     value={dateValue}
+    variant={readOnly? 'bordered' : 'flat'}
     onChange={handleChange}
     />
   );

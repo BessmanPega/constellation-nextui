@@ -76,6 +76,7 @@ export default function Phone(props: PhoneProps) {
     placeholder={placeholder}
     type="tel"
     value={displayValue}
+    variant={readOnly? 'bordered' : 'flat'}
     onBlur={handleBlur}
     onChange={handleChange}
     />
