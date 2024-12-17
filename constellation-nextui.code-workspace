@@ -17,5 +17,7 @@
       "Pega",
       "validatemessage"
     ],
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": false,
   },
 }

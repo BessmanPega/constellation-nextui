@@ -1,6 +1,7 @@
 // Statically load all "local" components that aren't yet in the npm package
 import ActionButtons from './src/components/ActionButtons';
 import Assignment from './src/components/Assignment';
+import AssignmentCard from './src/components/AssignmentCard';
 import AutoComplete from './src/components/AutoComplete';
 import Date from './src/components/Date';
 import DefaultForm from './src/components/DefaultForm';
@@ -11,6 +12,7 @@ import MultiStep from './src/components/MultiStep';
 import Phone from './src/components/Phone';
 import RadioButtons from './src/components/RadioButtons';
 import TextInput from './src/components/TextInput';
+import ToDo from './src/components/ToDo';
 import TwoColumn from './src/components/TwoColumn';
 /*import end - DO NOT REMOVE*/
 
@@ -20,6 +22,7 @@ import TwoColumn from './src/components/TwoColumn';
 const localSdkComponentMap = {
     ActionButtons: ActionButtons,
     Assignment: Assignment,
+    AssignmentCard: AssignmentCard,
     AutoComplete: AutoComplete,
     Date: Date,
     DefaultForm: DefaultForm,
@@ -30,6 +33,7 @@ const localSdkComponentMap = {
     Phone: Phone,
     RadioButtons: RadioButtons,
     TextInput: TextInput,
+    Todo: ToDo, // NOTE: ConstellationJS Engine uses "Todo" and not "ToDo"!!!
     TwoColumn: TwoColumn,
     /*map end - DO NOT REMOVE*/
  };

@@ -1,64 +1,14 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
+  Alert,
   Card,
-  CardContent,
+  CardBody,
+  CardFooter,
   CardHeader,
-  Avatar,
-  Typography,
-  Badge,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from '@mui/material';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
-import { useTheme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
-import { Utils } from '@pega/react-sdk-components/lib/components/helpers/utils';
-import { PConnProps } from '@pega/react-sdk-components/lib/types/PConnProps';
-
-import './ToDo.css';
-
-const fetchMyWorkList = (datapage, fields, numberOfRecords, includeTotalCount, context) => {
-  return PCore.getDataPageUtils()
-    .getDataAsync(
-      datapage,
-      context,
-      {},
-      {
-        pageNumber: 1,
-        pageSize: numberOfRecords
-      },
-      {
-        select: Object.keys(fields).map(key => ({ field: PCore.getAnnotationUtils().getPropertyName(fields[key]) }))
-      },
-      {
-        invalidateCache: true,
-        additionalApiParams: {
-          includeTotalCount
-        }
-      }
-    )
-    .then(response => {
-      return {
-        ...response,
-        data: (Array.isArray(response?.data) ? response.data : []).map(row =>
-          Object.keys(fields).reduce((obj, key) => {
-            obj[key] = row[PCore.getAnnotationUtils().getPropertyName(fields[key])];
-            return obj;
-          }, {})
-        )
-      };
-    });
-};
+  Divider,
+  Link,
+} from "@nextui-org/react";
+import { PConnProps } from "@pega/react-sdk-components/lib/types/PConnProps";
 
 interface ToDoProps extends PConnProps {
   // If any, enter additional props that only exist on this component
@@ -76,317 +26,65 @@ interface ToDoProps extends PConnProps {
   isConfirm?: boolean;
 }
 
-const isChildCase = assignment => {
-  return assignment.isChild;
-};
-
-function topThreeAssignments(assignmentsSource: any[]): any[] {
-  return Array.isArray(assignmentsSource) ? assignmentsSource.slice(0, 3) : [];
-}
-
-function getID(assignment: any) {
-  if (assignment.value) {
-    const refKey = assignment.value;
-    return refKey.substring(refKey.lastIndexOf(' ') + 1);
-  }
-  const refKey = assignment.ID;
-  const arKeys = refKey.split('!')[0].split(' ');
-  return arKeys[2];
-}
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    borderLeft: '6px solid',
-    borderLeftColor: theme.palette.primary.light
-  },
-  avatar: {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.getContrastText(theme.palette.primary.light)
-  },
-  todoWrapper: {
-    borderLeft: '6px solid',
-    borderLeftColor: theme.palette.primary.light,
-    padding: theme.spacing(1),
-    margin: theme.spacing(1)
-  }
-}));
-
 export default function ToDo(props: ToDoProps) {
-  const {
-    getPConnect,
-    context,
-    datasource = [],
-    headerText = 'To do',
-    showTodoList = true,
-    myWorkList = {},
-    type = 'worklist',
-    isConfirm = false
-  } = props;
+  const { itemKey = "" } = props;
 
-  const CONSTS = PCore.getConstants();
+  const messages = PCore.getStoreValue(
+    "caseMessages",
+    "",
+    itemKey,
+  ) as Array<string>;
+  const businessID = PCore.getStoreValue("caseInfo.businessID", "", itemKey);
 
-  const bLogging = true;
-  const currentUser = PCore.getEnvironmentInfo().getOperatorName();
-  const currentUserInitials = Utils.getInitials(currentUser);
-  const assignmentsSource = datasource?.source || myWorkList?.source;
-
-  const [bShowMore, setBShowMore] = useState(true);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage]: any = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const [assignments, setAssignments] = useState<any[]>(initAssignments());
-
-  const thePConn = getPConnect();
-  const classes = useStyles();
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const localizedVal = PCore.getLocaleUtils().getLocaleValue;
-  const localeCategory = 'Todo';
-  const showlessLocalizedValue = localizedVal('show_less', 'CosmosFields');
-  const showMoreLocalizedValue = localizedVal('show_more', 'CosmosFields');
-  const canPerform = assignments?.[0]?.canPerform === 'true' || assignments?.[0]?.canPerform === true;
-  const [count, setCount] = useState(0);
-
-  const {
-    WORK_BASKET: { MY_WORK_LIST }
-  } = PCore.getConstants();
-
-  function initAssignments(): any[] {
-    if (assignmentsSource) {
-      return topThreeAssignments(assignmentsSource);
-    }
-    // turn off todolist
-    return [];
-  }
-
-  const deferLoadWorklistItems = useCallback(
-    responseData => {
-      setCount(responseData.totalCount);
-      setAssignments(responseData.data);
-    },
-    [MY_WORK_LIST]
-  );
-
-  useEffect(() => {
-    if (Object.keys(myWorkList).length && myWorkList.datapage) {
-      fetchMyWorkList(myWorkList.datapage, getPConnect().getComponentConfig()?.myWorkList.fields, 3, true, context).then(responseData => {
-        deferLoadWorklistItems(responseData);
-      });
-    }
-  }, []);
-
-  const getAssignmentId = assignment => {
-    return type === CONSTS.TODO ? assignment.ID : assignment.id;
-  };
-
-  const getPriority = assignment => {
-    return type === CONSTS.TODO ? assignment.urgency : assignment.priority;
-  };
-
-  const getAssignmentName = assignment => {
-    return type === CONSTS.TODO ? assignment.name : assignment.stepName;
-  };
-
-  function showToast(message: string) {
-    const theMessage = `Assignment: ${message}`;
-    // eslint-disable-next-line no-console
-    console.error(theMessage);
-    setSnackbarMessage(message);
-    setShowSnackbar(true);
-  }
-
-  function handleSnackbarClose(event: React.SyntheticEvent<any> | Event, reason?: string) {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setShowSnackbar(false);
-  }
-
-  function _showMore() {
-    setBShowMore(false);
-    if (type === CONSTS.WORKLIST && count && count > assignments.length && !assignmentsSource) {
-      fetchMyWorkList(myWorkList.datapage, getPConnect().getComponentConfig()?.myWorkList.fields, count, false, context).then(response => {
-        setAssignments(response.data);
-      });
-    } else {
-      setAssignments(assignmentsSource);
-    }
-  }
-
-  function _showLess() {
-    setBShowMore(true);
-    setAssignments(assignments => assignments.slice(0, 3));
-  }
-
-  function clickGo(assignment) {
-    const id = getAssignmentId(assignment);
-    let { classname = '' } = assignment;
-    const sTarget = thePConn.getContainerName();
-    const sTargetContainerName = sTarget;
-
-    const options: any = {
-      containerName: sTargetContainerName,
-      channelName: ''
-    };
-
-    if (classname === null || classname === '') {
-      classname = thePConn.getCaseInfo().getClassName();
-    }
-
-    if (sTarget === 'workarea') {
-      options.isActionFromToDoList = true;
-      options.target = '';
-      options.context = null;
-      options.isChild = isChildCase(assignment);
-    } else {
-      options.isActionFromToDoList = false;
-      options.target = sTarget;
-    }
-
-    thePConn
-      .getActionsApi()
-      .openAssignment(id, classname, options)
-      .then(() => {
-        if (bLogging) {
-          // eslint-disable-next-line no-console
-          console.log(`openAssignment completed`);
-        }
-      })
-      .catch(() => {
-        showToast(`Submit failed!`);
-      });
-  }
-
-  const renderTaskId = (type, getPConnect, showTodoList, assignment) => {
-    const displayID = getID(assignment);
-
-    if ((showTodoList && type !== CONSTS.TODO) || assignment.isChild === true) {
-      /* Supress link for todo inside flow step */
-      return <Button size='small' color='primary'>{`${assignment.name} ${getID(assignment)}`}</Button>;
-    }
-    return displayID;
-  };
-
-  const getListItemComponent = assignment => {
-    if (isDesktop) {
-      return (
-        <>
-          {localizedVal('Task in', localeCategory)}
-          {renderTaskId(type, getPConnect, showTodoList, assignment)}
-          {type === CONSTS.WORKLIST && assignment.status ? `\u2022 ` : undefined}
-          {type === CONSTS.WORKLIST && assignment.status ? <span className='psdk-todo-assignment-status'>{assignment.status}</span> : undefined}
-          {` \u2022  ${localizedVal('Urgency', localeCategory)}  ${getPriority(assignment)}`}
-        </>
-      );
-    }
+  function infoIcon() {
     return (
-      <>
-        <Button size='small' color='primary'>{`${assignment.name} ${getID(assignment)}`}</Button>
-        {` \u2022 ${localizedVal('Urgency', localeCategory)}  ${getPriority(assignment)}`}
-      </>
+      <svg
+        fill="solid"
+        height="24"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+        className="fill-current w-6 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      >
+        <path d="M12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22ZM12.75 16C12.75 16.41 12.41 16.75 12 16.75C11.59 16.75 11.25 16.41 11.25 16L11.25 11C11.25 10.59 11.59 10.25 12 10.25C12.41 10.25 12.75 10.59 12.75 11L12.75 16ZM11.08 7.62C11.13 7.49 11.2 7.39 11.29 7.29C11.39 7.2 11.5 7.13 11.62 7.08C11.74 7.03 11.87 7 12 7C12.13 7 12.26 7.03 12.38 7.08C12.5 7.13 12.61 7.2 12.71 7.29C12.8 7.39 12.87 7.49 12.92 7.62C12.97 7.74 13 7.87 13 8C13 8.13 12.97 8.26 12.92 8.38C12.87 8.5 12.8 8.61 12.71 8.71C12.61 8.8 12.5 8.87 12.38 8.92C12.14 9.02 11.86 9.02 11.62 8.92C11.5 8.87 11.39 8.8 11.29 8.71C11.2 8.61 11.13 8.5 11.08 8.38C11.03 8.26 11 8.13 11 8C11 7.87 11.03 7.74 11.08 7.62Z" />
+      </svg>
     );
-  };
+  }
 
-  // eslint-disable-next-line no-nested-ternary
-  const getCount = () => (assignmentsSource ? assignmentsSource.length : type === CONSTS.WORKLIST ? count : 0);
-
-  const toDoContent = (
-    <>
-      {showTodoList && (
-        <CardHeader
-          title={
-            <Badge badgeContent={getCount()} overlap='rectangular' color='primary'>
-              <Typography variant='h6'>{headerText}&nbsp;&nbsp;&nbsp;</Typography>
-            </Badge>
-          }
-        />
-      )}
-      <List>
-        {assignments.map(assignment => (
-          <div className='psdk-todo-avatar-header' key={getAssignmentId(assignment)}>
-            <Avatar className={classes.avatar} style={{ marginRight: '16px' }}>
-              {currentUserInitials}
-            </Avatar>
-            <div style={{ display: 'block' }}>
-              <Typography variant='h6'>{assignment?.name}</Typography>
-              {`${localizedVal('Task in', localeCategory)} ${renderTaskId(type, getPConnect, showTodoList, assignment)} \u2022  ${localizedVal(
-                'Urgency',
-                localeCategory
-              )}  ${getPriority(assignment)}`}
-            </div>
-            {(!isConfirm || canPerform) && (
-              <div style={{ marginLeft: 'auto' }}>
-                <IconButton id='go-btn' onClick={() => clickGo(assignment)} size='large'>
-                  <ArrowForwardIosOutlinedIcon />
-                </IconButton>
-              </div>
-            )}
-          </div>
-        ))}
-      </List>
-    </>
-  );
+  function mailHref() {
+    return `mailto:support@example.com?subject=Help with request ${businessID}`;
+  }
 
   return (
-    <>
-      {type === CONSTS.WORKLIST && (
-        <Card className={classes.root}>
-          {showTodoList && (
-            <CardHeader
-              title={
-                <Badge badgeContent={getCount()} overlap='rectangular' color='primary'>
-                  <Typography variant='h6'>{headerText}&nbsp;&nbsp;&nbsp;</Typography>
-                </Badge>
-              }
-              avatar={<Avatar className={classes.avatar}>{currentUserInitials}</Avatar>}
-            />
-          )}
-          <CardContent>
-            <List>
-              {assignments.map(assignment => (
-                <ListItem key={getAssignmentId(assignment)} dense divider onClick={() => clickGo(assignment)}>
-                  <ListItemText primary={getAssignmentName(assignment)} secondary={getListItemComponent(assignment)} />
-                  <ListItemSecondaryAction>
-                    <IconButton onClick={() => clickGo(assignment)} size='large'>
-                      <ArrowForwardIosOutlinedIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-      )}
-
-      {type === CONSTS.TODO && !isConfirm && <Card className={classes.todoWrapper}>{toDoContent}</Card>}
-      {type === CONSTS.TODO && isConfirm && <>{toDoContent}</>}
-
-      {getCount() > 3 && (
-        <Box display='flex' justifyContent='center'>
-          {bShowMore ? (
-            <Button color='primary' onClick={_showMore}>
-              {showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue}
-            </Button>
-          ) : (
-            <Button onClick={_showLess}>{showlessLocalizedValue === 'show_less' ? 'Show less' : showlessLocalizedValue}</Button>
-          )}
-        </Box>
-      )}
-
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        action={
-          <IconButton size='small' aria-label='close' color='inherit' onClick={handleSnackbarClose}>
-            <CloseIcon fontSize='small' />
-          </IconButton>
-        }
-      />
-    </>
+    <div className="max-w-prose justify-self-center">
+      <Card className="m-4">
+        <CardHeader>
+          <p className="text-lg">
+            Your request ID is <span className="font-bold">{businessID}</span>
+          </p>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <p>
+            We received your request and are working diligently to fulfill it.
+            You should hear back from us within 3-5 business days. Acme
+            appreciates your business!
+          </p>
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          <p className="text-sm">
+            Email <Link className="text-sm" href={mailHref()}>support@example.com</Link> for help
+          </p>
+        </CardFooter>
+      </Card>
+      {messages.map((message: string) => (
+        <div key={message} className="m-4">
+          <Alert color="success" icon={infoIcon}>
+            {message}
+          </Alert>
+        </div>
+      ))}
+    </div>
   );
 }

@@ -37,25 +37,25 @@ export default function MultiStep(props: PropsWithChildren<MultiStepProps>) {
 
   return (
     <div className="text-left">
-        <Breadcrumbs className="my-4">
-            {arNavigationSteps.map((mainStep: any, index: any) => {
-                return (
-                <BreadcrumbItem key={mainStep.actionID} isCurrent={mainStep.ID === currentStep?.ID}>
-                    <Chip >{index + 1}</Chip>
-                    {mainStep.name}
-                </BreadcrumbItem>
-                );
-            })}
-        </Breadcrumbs>
-        {arNavigationSteps.map((mainStep: any) => {
-            if (mainStep.ID === currentStep.ID) {
-                return (
-                    <AssignmentCard key={mainStep.actionID} actionButtons={actionButtons} getPConnect={getPConnect} onButtonPress={buttonPress}>
-                        {children}
-                    </AssignmentCard>
-                );
-            }
+      <Breadcrumbs className="px-4 py-2">
+        {arNavigationSteps.map((mainStep: any, index: any) => {
+          return (
+          <BreadcrumbItem key={mainStep.actionID} isCurrent={mainStep.ID === currentStep?.ID}>
+            <Chip >{index + 1}</Chip>
+            {mainStep.name}
+          </BreadcrumbItem>
+          );
         })}
+      </Breadcrumbs>
+      {arNavigationSteps.map((mainStep: any) => {
+        if (mainStep.ID === currentStep.ID) {
+          return (
+            <AssignmentCard key={mainStep.actionID} actionButtons={actionButtons} getPConnect={getPConnect} onButtonPress={buttonPress}>
+              {children}
+            </AssignmentCard>
+          );
+        }
+      })}
     </div>
   );
 }

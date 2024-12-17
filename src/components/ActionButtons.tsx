@@ -1,4 +1,4 @@
-import { Button, Divider } from "@nextui-org/react";
+import { Button, Divider, Spacer } from "@nextui-org/react";
 import { PressEvent } from "@react-types/shared";
 
 // ActionButtons does NOT have getPConnect. So, no need to extend from PConnProps
@@ -31,22 +31,25 @@ export default function ActionButtons(props: ActionButtonsProps) {
 
   return (
     <>
-        <Divider className="my-4"/>
-        <div className="flex">
-            <div className="flex grow space-x-4 items-start">
-                {arSecondaryButtons.map((button: any) => {
-                    // Filter out buttons we don't want to present to our customers.
-                    if (button.name === 'Cancel' || button.name === 'Previous') {
-                        return renderButton(button, 'secondary');
-                    }
+      <div className="py-2">
+        <Divider/>
+      </div>
+      <div className="flex px-4 py-2">
+        <div className="flex grow space-x-4 items-start">
+          {arSecondaryButtons.map((button: any) => {
+            // Filter out buttons we don't want to present to our customers.
+            if (button.name === 'Cancel' || button.name === 'Previous') {
+              return renderButton(button, 'secondary');
+            }
 
-                    return null;
-                })}
-            </div>
-            <div className="grid justify-items-end space-x-4">
-                {arMainButtons.map((button: any) => { return renderButton(button, 'primary'); })}
-            </div>
+            return null;
+          })}
         </div>
+        <div className="grid justify-items-end space-x-4">
+          {arMainButtons.map((button: any) => { return renderButton(button, 'primary'); })}
+          <Spacer y={2}/>
+        </div>
+      </div>
     </>
   );
 }

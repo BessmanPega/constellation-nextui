@@ -268,18 +268,18 @@ export const FlowContainer = (props: FlowContainerProps) => {
   const displayPageMessages = () => {
     let hasBanner = false;
     const messages = pageMessages ? pageMessages.map(msg => localizedVal(msg.message, 'Messages')) : pageMessages;
-
+    
     hasBanner = messages && messages.length > 0;
 
-    return hasBanner && <Alert color='warning'>{messages}</Alert>;
+    return hasBanner && <div className="w-full px-4"><Alert className="my-4" color='warning' >{messages}</Alert></div>;
   };
 
   return (
     <div id={buildName}>
       {!bShowConfirm &&
         (!todo_showTodo ? (
-          <Card className="p-4 items-start">
-            {localizedVal(containerName, undefined, key)}
+          <Card className="items-start">
+            <span className="px-4 py-2 text-lg">{localizedVal(containerName, undefined, key)}</span>
             {displayPageMessages()}
             {bHasCaseMessages && ( <Alert hideIcon color='success'>{caseMessages}</Alert> )}
             <Assignment getPConnect={getPConnect} itemKey={itemKey}>
