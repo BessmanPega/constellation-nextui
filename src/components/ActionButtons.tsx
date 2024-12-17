@@ -33,7 +33,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
     <>
         <Divider className="my-4"/>
         <div className="flex">
-            <div className="grow space-x-4">
+            <div className="flex grow space-x-4 items-start">
                 {arSecondaryButtons.map((button: any) => {
                     // Filter out buttons we don't want to present to our customers.
                     if (button.name === 'Cancel' || button.name === 'Previous') {

@@ -1,19 +1,15 @@
 /* eslint-disable no-nested-ternary */
 
 import { useState, useEffect, useContext } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import { Alert, Card, CardHeader, Avatar, Typography } from '@mui/material';
-
+import { Alert, Card } from '@nextui-org/react';
 import StoreContext from '@pega/react-sdk-components/lib/bridge/Context/StoreContext';
 import { Utils } from '@pega/react-sdk-components/lib/components/helpers/utils';
 import { isContainerInitialized } from '@pega/react-sdk-components/lib/components/infra/Containers/helpers';
 import { getComponentFromMap } from '@pega/react-sdk-components/lib/bridge/helpers/sdk_component_map';
 import { withSimpleViewContainerRenderer } from '@pega/react-sdk-components/lib/components/infra/Containers/SimpleView/SimpleView';
-
 import { addContainerItem, getToDoAssignments, showBanner, hasContainerItems } from '@pega/react-sdk-components/lib/components/infra/Containers/FlowContainer/helpers';
 import { PConnProps } from '@pega/react-sdk-components/lib/types/PConnProps';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 interface FlowContainerProps extends PConnProps {
   // If any, enter additional props that only exist on this component
@@ -23,33 +19,6 @@ interface FlowContainerProps extends PConnProps {
   assignmentNames: string[];
   activeContainerItemID: string;
 }
-
-//
-// WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
-// Redux and creation/update of Redux containers and PConnect.  Modifying this code could have undesireable results and
-// is totally at your own risk.
-//
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    paddingRight: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-    marginRight: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  },
-  alert: {
-    marginRight: theme.spacing(1),
-    marginLeft: theme.spacing(1)
-  },
-  avatar: {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.getContrastText(theme.palette.primary.light)
-  }
-}));
 
 export const FlowContainer = (props: FlowContainerProps) => {
   // Get the proper implementation (local or Pega-provided) for these components that are emitted below
@@ -99,7 +68,6 @@ export const FlowContainer = (props: FlowContainerProps) => {
   const localeCategory = 'Messages';
 
   const key = `${thePConn.getCaseInfo().getClassName()}!CASE!${thePConn.getCaseInfo().getName()}`.toUpperCase();
-  const classes = useStyles();
 
   function getBuildName(): string {
     const ourPConn = getPConnect();
@@ -109,15 +77,17 @@ export const FlowContainer = (props: FlowContainerProps) => {
     let viewContainerName = ourPConn.getContainerName();
 
     if (!viewContainerName) viewContainerName = '';
+    
     return `${context.toUpperCase()}/${viewContainerName.toUpperCase()}`;
   }
 
   function getTodoVisibility() {
     const caseViewMode = getPConnect().getValue('context_data.caseViewMode', ''); // 2nd arg empty string until typedefs properly allow optional
+
     if (caseViewMode && caseViewMode === 'review') {
       return true;
     }
-    // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+
     if (caseViewMode && caseViewMode === 'perform') {
       return false;
     }
@@ -167,12 +137,15 @@ export const FlowContainer = (props: FlowContainerProps) => {
     const actionID = ourPConn.getValue(pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID, ''); // 2nd arg empty string until typedefs properly allow optional
     const caseActions = ourPConn.getValue(pCoreConstants.CASE_INFO.AVAILABLEACTIONS, ''); // 2nd arg empty string until typedefs properly allow optional
     let bCaseWideAction = false;
+
     if (caseActions && actionID) {
-      const actionObj = caseActions.find(caseAction => caseAction.ID === actionID);
+      const actionObj = caseActions.find((caseAction: any) => caseAction.ID === actionID);
+
       if (actionObj) {
         bCaseWideAction = actionObj.type === 'Case';
       }
     }
+
     return bCaseWideAction;
   }
 
@@ -181,10 +154,11 @@ export const FlowContainer = (props: FlowContainerProps) => {
 
     const childCases = ourPConn.getValue(pCoreConstants.CASE_INFO.CHILD_ASSIGNMENTS, ''); // 2nd arg empty string until typedefs properly allow optional
     // const allAssignments = [];
-    // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+
     if (childCases && childCases.length > 0) {
       return true;
     }
+
     return false;
   }
 
@@ -195,11 +169,11 @@ export const FlowContainer = (props: FlowContainerProps) => {
     const assignmentsList: any[] = ourPConn.getValue(pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS, ''); // 2nd arg empty string until typedefs properly allow optional
     const isEmbedded = window.location.href.includes('embedded');
     let bAssignmentsForThisOperator = false;
-    // 8.7 includes assignments in Assignments List that may be assigned to
-    //  a different operator. So, see if there are any assignments for
-    //  the current operator
-    if (PCoreVersion?.includes('8.7') || isEmbedded) {
+
+    //  See if there are any assignments for the current operator
+    if (isEmbedded) {
       const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
+
       for (const assignment of assignmentsList) {
         if (assignment.assigneeInfo.ID === thisOperator) {
           bAssignmentsForThisOperator = true;
@@ -208,6 +182,7 @@ export const FlowContainer = (props: FlowContainerProps) => {
     } else {
       bAssignmentsForThisOperator = true;
     }
+
     // Bail out if there isn't an assignmentsList
     if (!assignmentsList) {
       return bHasAssignments;
@@ -230,6 +205,7 @@ export const FlowContainer = (props: FlowContainerProps) => {
     // let routingInfo = this.getComponentProp("routingInfo");
 
     let loadingInfo: any;
+
     try {
       loadingInfo = thePConn.getLoadingStatus(''); // 1st arg empty string until typedefs properly allow optional
     } catch (ex) {
@@ -246,10 +222,12 @@ export const FlowContainer = (props: FlowContainerProps) => {
 
     const caseViewMode = thePConn.getValue('context_data.caseViewMode', ''); // 2nd arg empty string until typedefs properly allow optional
     const { CASE_INFO: CASE_CONSTS } = pCoreConstants;
+
     if (caseViewMode && caseViewMode === 'review') {
       setTimeout(() => {
         // updated for 8.7 - 30-Mar-2022
         const todoAssignments = getToDoAssignments(thePConn);
+
         if (todoAssignments && todoAssignments.length > 0) {
           setCaseInfoID(thePConn.getValue(CASE_CONSTS.CASE_INFO_ID, '')); // 2nd arg empty string until typedefs properly allow optional
           setTodoDatasource({ source: todoAssignments });
@@ -288,70 +266,49 @@ export const FlowContainer = (props: FlowContainerProps) => {
     }
   }, [props]);
 
-  const caseId = thePConn.getCaseSummary().content.pyID;
-  const urgency = getPConnect().getCaseSummary().assignments ? getPConnect().getCaseSummary().assignments?.[0].urgency : '';
-  const operatorInitials = Utils.getInitials(PCore.getEnvironmentInfo().getOperatorName());
-
   const bShowBanner = showBanner(getPConnect);
 
   const displayPageMessages = () => {
     let hasBanner = false;
     const messages = pageMessages ? pageMessages.map(msg => localizedVal(msg.message, 'Messages')) : pageMessages;
+
     hasBanner = messages && messages.length > 0;
-    return hasBanner && <AlertBanner id='flowContainerBanner' variant='urgent' messages={messages} />;
+
+    return hasBanner && <Alert color='warning'>{messages}</Alert>;
   };
 
+  if (!caseMessages) {
+    setCaseMessages("what does this do?");
+    setHasCaseMessages(true);
+  }
+  if (caseMessages) console.log(`caseMessages: ${caseMessages}`);
+
   return (
-    <div style={{ textAlign: 'left', backgroundColor: 'orange' }} id={buildName} className='psdk-flow-container-top'>
+    <div id={buildName}>
       {!bShowConfirm &&
         (!todo_showTodo ? (
-          !displayOnlyFA ? (
-            <Card className={`${classes.root} psdk-root`}>
-              <CardHeader
-                id='assignment-header'
-                title={<Typography variant='h6'>{localizedVal(containerName, undefined, key)}</Typography>}
-                subheader={`${localizedVal('Task in', 'Todo')} ${caseId} \u2022 ${localizedVal('Priority', 'Todo')} ${urgency}`}
-                avatar={<Avatar className={`${classes.avatar} psdk-avatar`}>{operatorInitials}</Avatar>}
-              />
-              {displayPageMessages()}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Assignment getPConnect={getPConnect} itemKey={itemKey}>
-                  {rootViewElement}
-                </Assignment>
-              </LocalizationProvider>
-            </Card>
-          ) : (
-            <Card className={`${classes.root} psdk-root`}>
-              <Typography variant='h6'>{localizedVal(containerName, undefined, key)}</Typography>
-              {displayPageMessages()}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Assignment getPConnect={getPConnect} itemKey={itemKey}>
-                  {rootViewElement}
-                </Assignment>
-              </LocalizationProvider>
-            </Card>
-          )
+          <Card className="p-4 items-start">
+            {localizedVal(containerName, undefined, key)}
+            {displayPageMessages()}
+            {bHasCaseMessages && ( <Alert hideIcon color='success'>{caseMessages}</Alert> )}
+            <Assignment getPConnect={getPConnect} itemKey={itemKey}>
+              {rootViewElement}
+            </Assignment>
+          </Card>
         ) : (
-          <div>
-            <ToDo
-              key={Math.random()}
-              getPConnect={getPConnect}
-              caseInfoID={todo_caseInfoID}
-              datasource={todo_datasource}
-              showTodoList={todo_showTodoList}
-              headerText={todo_headerText}
-              type={TODO}
-              context={todo_context}
-              itemKey={itemKey}
-              isConfirm
-            />
-          </div>
-        ))}
-      {bHasCaseMessages && (
-        <div className={`${classes.alert} psdk-alert`}>
-          <Alert severity='success'>{caseMessages}</Alert>
-        </div>
-      )}
+          <ToDo
+          key={Math.random()}
+          isConfirm
+          caseInfoID={todo_caseInfoID}
+          context={todo_context}
+          datasource={todo_datasource}
+          getPConnect={getPConnect}
+          headerText={todo_headerText}
+          itemKey={itemKey}
+          showTodoList={todo_showTodoList}
+          type={TODO}
+          />
+      ))}
       {bShowConfirm && bShowBanner && <div>{rootViewElement}</div>}
     </div>
   );

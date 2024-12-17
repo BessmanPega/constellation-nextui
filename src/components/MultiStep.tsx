@@ -36,7 +36,7 @@ export default function MultiStep(props: PropsWithChildren<MultiStepProps>) {
   }
 
   return (
-    <>
+    <div className="text-left">
         <Breadcrumbs className="my-4">
             {arNavigationSteps.map((mainStep: any, index: any) => {
                 return (
@@ -56,6 +56,6 @@ export default function MultiStep(props: PropsWithChildren<MultiStepProps>) {
                 );
             }
         })}
-    </>
+    </div>
   );
 }
