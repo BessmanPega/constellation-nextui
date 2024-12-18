@@ -63,9 +63,9 @@ export default function ToDo(props: ToDoProps) {
           </p>
         </CardFooter>
       </Card>
-      {messages.map((message: string) => (
+      {messages?.map((message: string) => (
         <div key={message} className="m-4 text-left">
-          <Alert color="success">
+          <Alert hideIcon color="success">
             {message}
           </Alert>
         </div>
