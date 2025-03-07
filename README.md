@@ -1,4 +1,10 @@
-How I set this up:
+# Embedding a Constellation Case in a React app using the React SDK and NextUI
+
+https://github.com/user-attachments/assets/83a4e4d5-f422-4f4e-ba46-9207e6ca793e
+
+This is just an example, and not a particularly well documented one at this point. Think "descriptive," not "prescriptive."
+
+## How I set this up:
 
 https://nextui.org/docs/guide/installation
 
@@ -144,7 +150,7 @@ X [ERROR] Could not resolve "@mui/material/Checkbox"
 
 Over and over again. Given that `@pega/react-sdk-components` is one of the core libraries, it doesn't look like it's possible to pull MUI out of the project dependencies at this point in time.
 
-# Vite & NextUI Template
+## Based on Vite & NextUI Template
 
 This is a template for creating applications using Vite and NextUI (v2).
 
