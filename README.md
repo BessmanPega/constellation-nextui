@@ -1,4 +1,7 @@
-# Embedding a Constellation Case in a React app using the React SDK and NextUI
+# Archived
+Please use [constellation-via-heroui](https://github.com/BessmanPega/constellation-via-heroui) instead.
+
+## Embedding a Constellation Case in a React app using the React SDK and NextUI
 
 https://github.com/user-attachments/assets/83a4e4d5-f422-4f4e-ba46-9207e6ca793e
 
